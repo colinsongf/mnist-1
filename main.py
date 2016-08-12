@@ -75,3 +75,23 @@ if __name__ == "__main__":
     fig.savefig('samples_RMSprop.png')
     plt.close(fig)
     plt.clf()
+    
+    # plot a few of the local energy minima starting from random points 
+    fig, axes = plt.subplots(nrows=3, ncols=3)
+
+    for i in range(3):
+        randv =  bernoulli.rvs(0.2,size = dim[0]*dim[1])
+        h_data, v_free, h_free = anneal(randv, a, b, W, 100, lambda x: 10.0*(0.9**x)) # run 100 Monte Carlo steps in hopes of reaching an equilibrium
+        
+        sns.heatmap(mnist.squareform(randv, dim), ax = axes[i][0], cbar = False, xticklabels = False, yticklabels = False)    
+        sns.heatmap(mnist.squareform(v_free, dim), ax = axes[i][1], cbar = False, xticklabels = False, yticklabels = False)
+        sns.heatmap(mnist.squareform(logistic(visible_fields(h_data, W, a)), dim), ax = axes[i][2], cbar = False, xticklabels = False, yticklabels = False)    
+        
+        axes[i][0].set_title('input', fontsize = 12)
+        axes[i][1].set_title('stochastic sample', fontsize = 12)
+        axes[i][2].set_title('visible probabilities', fontsize = 12)
+        
+    plt.tight_layout()
+    fig.savefig('annealed_samples_RMSprop.png')
+    plt.close(fig)
+    plt.clf()

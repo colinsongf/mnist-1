@@ -39,6 +39,16 @@ def gibbs(v_data, a, b, W, steps):
         h_free = gibbs_forward(v_free,W,b)
     return (h_data, v_free, h_free)
     
+# anneal: (array, vec, vec, array, int, function) -> tuple
+def anneal(v_data, a, b, W, steps, func):
+    h_data = gibbs_forward(v_data, W, b)
+    h_free = h_data.copy()    
+    for i in range(steps):
+        T = func(i)
+        v_free = gibbs_backward(h_free,W/T,a/T)
+        h_free = gibbs_forward(v_free,W/T,b/T)
+    return (h_data, v_free, h_free)
+    
 # rmse: (array, array) -> float
 def rmse(v_data, v_free):
     return numpy.sqrt(numpy.mean(numpy.ravel(v_data - v_free)**2))
