@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # run contrastive divergence
     minibatch_size = 200
     n_hidden = 1000
-    n_contrastive_divergence_steps = 3
+    n_contrastive_divergence_steps = 2
     momentum = 0.0
     n_epochs = 10
     method = "RMSprop"

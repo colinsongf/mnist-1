@@ -4,7 +4,7 @@ from scipy.special import expit
 
 # random_params: (int, int, tuple, tuple) -> tuple
 def random_params(nvisible, nhidden, loc, scale):
-    return (numpy.random.normal(loc=loc[0],scale=scale[0],size=nvisible), numpy.random.normal(loc=[1],scale=scale[1],size=nhidden), numpy.random.normal(loc=loc[2],scale=scale[2],size=(nvisible,nhidden)))
+    return (numpy.random.normal(loc=loc[0],scale=scale[0],size=nvisible), numpy.random.normal(loc=loc[1],scale=scale[1],size=nhidden), numpy.random.normal(loc=loc[2],scale=scale[2],size=(nvisible,nhidden)))
 
 # hidden_fields: (array, array, vector) -> array
 def hidden_fields(visible, W, b):
@@ -66,14 +66,14 @@ def grad_W(h_data, v_data, h_free, v_free):
     return (numpy.dot(v_data.T,h_data) - numpy.dot(v_free.T,h_free))/len(v_data)
     
 # descent: (array, int, tuple, int, int, float, int, OPTIONAL) -> tuple
-def descent(images, batchsize, dim, n_hidden, n, momentum, epochs, method = "RMSprop"):
+def descent(images, batchsize, dim, n_hidden, n, momentum, epochs, method = "RMSprop", verbose = True):
     astep, bstep, Wstep = 0.001, 0.001, 0.001
     a,b,W = random_params(dim[0]*dim[1], n_hidden, (-0.5, -0.2, 0.0), (0.05, 0.05, 0.5))
     Da, Db, DW = numpy.zeros_like(a), numpy.zeros_like(b), numpy.zeros_like(W) 
     MSa, MSb, MSW = numpy.zeros_like(a), numpy.zeros_like(b), numpy.zeros_like(W) 
     # an array to store the reconstruction error values during the descent
     mem = []
-    
+        
     # permute the images into a random order
     randim = mnist.random_permute(images)
     for epoch in range(epochs):
@@ -86,7 +86,8 @@ def descent(images, batchsize, dim, n_hidden, n, momentum, epochs, method = "RMS
             h_data, v_free, h_free = gibbs(v_data, a, b, W, n)
             if t % 10 == 0:
                 err = rmse(v_data, v_free)
-                print("{0}: {1}: {2:.4f}".format(epoch,t,err))
+                if verbose:
+                    print("{0}: {1}: {2:.4f}".format(epoch,t,err))
                 mem.append(err)        
             
             # compute the gradients
@@ -107,9 +108,11 @@ def descent(images, batchsize, dim, n_hidden, n, momentum, epochs, method = "RMS
                 DW = lr*Wstep*dW + momentum*DW    
             else:
                 raise ValueError("method must be one of: RMSprop, momentum")
-                
+                                
             # update the paramters
+            #a, W = a + Da, W + DW
             a, b, W = a + Da, b + Db, W + DW
+        
     
     return (a, b, W, mem)
 
