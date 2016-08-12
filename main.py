@@ -1,6 +1,6 @@
 import mnist, numpy, time
-import seaborn as sns
 import matplotlib.pyplot as plt
+import seaborn as sns
 from contrastive_divergence import *
 
 sns.set_style("white")
@@ -33,11 +33,9 @@ if __name__ == "__main__":
     plt.ylabel('Reconstruction error', fontsize=18)
     
     plt.tight_layout()
-    plt.show(fig)
     fig.savefig('reconstruction_error_RMSprop.png')
     plt.close(fig)
-    plt.clf()
-    
+        
     # plot a few reconstructions starting from data
     fig, axes = plt.subplots(nrows=3, ncols = 3)
 
@@ -54,7 +52,6 @@ if __name__ == "__main__":
         axes[i][2].set_title('visible probabilities', fontsize = 12)
 
     plt.tight_layout()
-    plt.show(fig)
     fig.savefig('reconstructions_RMSprop.png')
     plt.close(fig)
     plt.clf()
@@ -63,7 +60,7 @@ if __name__ == "__main__":
     fig, axes = plt.subplots(nrows=3, ncols=3)
 
     for i in range(3):
-        randv =  numpy.random.randint(low=0, high=2, size = (1,dim[0]*dim[1]))
+        randv =  bernoulli.rvs(0.2,size = dim[0]*dim[1])
         h_data, v_free, h_free = gibbs(randv, a, b, W, 100) # run 100 Monte Carlo steps in hopes of reaching an equilibrium
         
         sns.heatmap(mnist.squareform(randv, dim), ax = axes[i][0], cbar = False, xticklabels = False, yticklabels = False)    
@@ -75,8 +72,6 @@ if __name__ == "__main__":
         axes[i][2].set_title('visible probabilities', fontsize = 12)
         
     plt.tight_layout()
-    plt.show(fig)
     fig.savefig('samples_RMSprop.png')
     plt.close(fig)
     plt.clf()
-

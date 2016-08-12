@@ -47,7 +47,7 @@ def rmse(v_data, v_free):
 def grad_a(v_data, v_free):
     return numpy.mean(v_data - v_free, axis=0)
     
-# grad_a: (array, array) -> vec
+# grad_b: (array, array) -> vec
 def grad_b(h_data, h_free):
     return numpy.mean(h_data - h_free, axis=0)
     
